@@ -1,0 +1,498 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <!-- Basic -->
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <!-- Mobile Metas -->
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+  <!-- Site Metas -->
+  <meta name="keywords" content="" />
+  <meta name="description" content="" />
+  <meta name="author" content="" />
+
+  <title>ほけんがかり</title>
+
+  <!-- slider stylesheet -->
+  <link rel="stylesheet" type="text/css"
+    href="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.1.3/assets/owl.carousel.min.css" />
+
+  <!-- bootstrap core css -->
+  <link rel="stylesheet" type="text/css" href="../static/css/bootstrap.css" />
+
+  <!-- fonts style -->
+  <link href="https://fonts.googleapis.com/css?family=Open+Sans:400,700|Poppins:400,700&display=swap" rel="stylesheet">
+  <!-- Custom styles for this template -->
+  <link href="../static/css/style.css" rel="stylesheet" />
+  <!-- responsive style -->
+  <link href="../static/css/responsive.css" rel="stylesheet" />
+</head>
+
+<body class="sub_page">
+  <div class="hero_area">
+    <!-- header section strats -->
+    <header class="header_section">
+      <div class="container-fluid">
+        <nav class="navbar navbar-expand-lg custom_nav-container">
+          <a class="navbar-brand" href="{{ url_for('home') }}">
+            <img src="../static/images/logo.png" alt="" />
+          </a>
+          <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+          </button>
+
+          <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav  ">
+              <li class="nav-item ">
+                <a class="nav-link" href="{{ url_for('home') }}">
+                  <h3>ホーム</h3>
+              </a>
+          </li>
+          <li class="nav-item">
+              <a class="nav-link" href="{{ url_for('add') }}">
+                  <h3>追加</h3>
+              </a>
+          </li>
+          <li class="nav-item active">
+              <a class="nav-link" href="{{ url_for('map_page') }}">
+                  <h3>マップ</h3>
+              </a>
+          </li>
+          <li class="nav-item">
+              <a class="nav-link" href="{{ url_for('calendar') }}">
+                  <h3>カレンダー</h3>
+              </a>
+          </li>
+          <li class="nav-item">
+              <a class="nav-link" href="{{ url_for('contact') }}">
+                  <h3>問い合わせ</h3>
+              </a>
+              </li>
+            </ul>
+            <div class="user_option">
+              {% if session['username'] %}
+                  <span>
+                      {{ session['username'] }} <!-- Display the logged-in username -->
+                  </span>
+                  <a href="{{ url_for('logout') }}" class="btn btn-danger">Logout</a>
+              {% else %}
+                  <a href="{{ url_for('login') }}">
+                      <img src="../static/images/user.png" alt="">
+                      <span>ログアウト</span> <!-- Changed to "Login" -->
+                  </a>
+              {% endif %}
+              <form class="form-inline my-2 my-lg-0 ml-0 ml-lg-4 mb-3 mb-lg-0">
+                  <button class="btn my-2 my-sm-0 nav_search-btn" type="submit"></button>
+              </form>
+            </div>
+          
+          </div>
+          <div>
+            <div class="custom_menu-btn ">
+              <button>
+                <span class=" s-1">
+
+                </span>
+                <span class="s-2">
+
+                </span>
+                <span class="s-3">
+
+                </span>
+              </button>
+            </div>
+          </div>
+
+        </nav>
+      </div>
+    </header>
+    <!-- end header section -->
+  </div>
+
+
+
+  <!-- map section -->
+  <section class="map_section layout_padding">
+    <div class="day">
+        <button onclick="changeDate(-1)" id="prevDate">前の日</button>
+        <span id="dateDisplay"></span>
+        <button onclick="changeDate(1)" id="nextDate">次の日</button>
+    </div>
+
+    <!-- Loading screen -->
+    <div id="loadingScreen" style="display: none;">
+        <div id="loadingSpinner"></div>
+    </div>
+
+    <style>
+        /* Loading screen styles */
+        #loadingScreen {
+            position: fixed;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            background-color: rgba(0, 0, 0, 0.5);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+        }
+
+        /* Spinner styles */
+        #loadingSpinner {
+            border: 16px solid #f3f3f3;
+            border-top: 16px solid #3498db;
+            border-radius: 50%;
+            width: 120px;
+            height: 120px;
+            animation: spin 2s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+
+    <script>
+        // Initialize current date
+        let currentDate;
+
+        // Check if there's a stored date in localStorage
+        const storedDate = localStorage.getItem('currentDate');
+        if (storedDate) {
+            currentDate = new Date(storedDate); // Use the stored date
+        } else {
+            currentDate = new Date(); // Get today's date
+        }
+
+        const dateDisplay = document.getElementById('dateDisplay');
+        dateDisplay.textContent = currentDate.toISOString().split('T')[0]; // Display the date in YYYY-MM-DD format
+
+        // Function to update the displayed date and store it in localStorage
+        function updateDateDisplay() {
+            dateDisplay.textContent = currentDate.toISOString().split('T')[0];
+            localStorage.setItem('currentDate', currentDate.toISOString()); // Store the current date
+        }
+
+        // Function to change the date based on the button click
+        function changeDate(days) {
+            currentDate.setDate(currentDate.getDate() + days); // Update the current date by days
+            updateDateDisplay(); // Update the displayed date
+            runGGScript(); // Run the Python script after updating the date
+        }
+
+        // Function to show the loading screen
+        function showLoadingScreen() {
+            document.getElementById('loadingScreen').style.display = 'flex'; // Show the loading screen
+        }
+
+        // Function to hide the loading screen
+        function hideLoadingScreen() {
+            document.getElementById('loadingScreen').style.display = 'none'; // Hide the loading screen
+        }
+
+        // Function to run the Python script with the current date
+        function runGGScript() {
+            showLoadingScreen(); // Show the loading screen when fetching starts
+
+            const inputDate = dateDisplay.innerText; // Get the date from the span
+            fetch('/run-gg', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ date: inputDate }) // Send the date in the request body
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.error) {
+                    alert('Error: ' + data.error);
+                } else {
+                    alert('Script executed successfully! Output: ' + data.output);
+                }
+                hideLoadingScreen(); // Hide the loading screen after the script completes
+                location.reload(); // Refresh the page
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('There was an error!');
+                hideLoadingScreen(); // Ensure the loading screen is hidden in case of error
+            });
+        }
+
+        // Update the date display initially
+        updateDateDisplay();
+    </script>
+</section>
+
+      <div class="town">
+          
+          <img src="../static/images/若葉台.png" alt="若葉台" class="mappic" id="若葉台">
+          <img src="../static/images/上川井町.png" alt="上川井町" class="mappic" id="上川井町">
+          <img src="../static/images/川井本町.png" alt="川井本町" class="mappic" id="川井本町">
+          <img src="../static/images/川井宿町.png" alt="川井宿町" class="mappic" id="川井宿町">
+          <img src="../static/images/都岡町.png" alt="都岡町" class="mappic" id="都岡町">
+          <img src="../static/images/下川井町.png" alt="下川井町" class="mappic" id="下川井町">
+          <img src="../static/images/上白根町.png" alt="上白根町" class="mappic" id="上白根町">
+          <img src="../static/images/上白根.png" alt="上白根" class="mappic" id="上白根">
+          <img src="../static/images/中白根.png" alt="中白根" class="mappic" id="中白根">
+          <img src="../static/images/白根町.png" alt="白根町" class="mappic" id="白根町">
+          <img src="../static/images/今宿西町.png" alt="今宿西町" class="mappic" id="今宿西町">
+          <img src="../static/images/今宿東町.png" alt="今宿東町" class="mappic" id="今宿東町">
+          <img src="../static/images/白根.png" alt="白根" class="mappic" id="白根">         
+          <img src="../static/images/川島町.png" alt="川島町" class="mappic" id="川島町">
+          <img src="../static/images/矢指町.png" alt="矢指町" class="mappic" id="矢指町">
+          <img src="../static/images/金が谷.png" alt="金が谷" class="mappic" id="金が谷">
+          <img src="../static/images/今宿南町.png" alt="今宿南町" class="mappic" id="今宿南町">
+          <img src="../static/images/鶴ヶ峰本町.png" alt="鶴ヶ峰本町" class="mappic" id="鶴ヶ峰本町">
+          <img src="../static/images/笹野台.png" alt="笹野台" class="mappic" id="笹野台">
+          <img src="../static/images/今宿町.png" alt="今宿町" class="mappic" id="今宿町">
+          <img src="../static/images/今宿.png" alt="今宿"class="mappic" id="今宿">
+          <img src="../static/images/今川町.png" alt="今川町" class="mappic" id="今川町">
+          <img src="../static/images/中沢.png" alt="中沢" class="mappic" id="中沢">
+          <img src="../static/images/四季美台.png" alt="四季美台" class="mappic" id="四季美台">
+          <img src="../static/images/鶴ヶ峰.png" alt="鶴ヶ峰" class="mappic" id="鶴ヶ峰">
+          <img src="../static/images/西川島町.png" alt="西川島町" class="mappic" id="西川島町">
+          <img src="../static/images/中尾.png" alt="中尾" class="mappic" id="中尾">
+          <img src="../static/images/本村町.png" alt="本村町" class="mappic" id="本村町">
+          <img src="../static/images/本宿町.png" alt="本宿町" class="mappic" id="本宿町">
+          <img src="../static/images/川島町2.png" alt="川島町2" class="mappic" id="川島町2">
+          <img src="../static/images/三反田町.png" alt="三反田町" class="mappic" id="三反田町">
+          <img src="../static/images/小高町.png" alt="小高町" class="mappic" id="小高町">
+          <img src="../static/images/東希望が丘.png" alt="東希望が丘" class="mappic" id="東希望が丘">
+          <img src="../static/images/中希望が丘.png" alt="中希望が丘" class="mappic" id="中希望が丘">
+          <img src="../static/images/南希望が丘.png" alt="南希望が丘" class="mappic" id="南希望が丘">
+          <img src="../static/images/さちが丘.png" alt="さちが丘" class="mappic" id="さちが丘">
+          <img src="../static/images/二俣川.png" alt="二俣川" class="mappic" id="二俣川">
+          <img src="../static/images/左近山.png" alt="左近山" class="mappic" id="左近山">
+          <img src="../static/images/市沢町.png" alt="市沢町" class="mappic" id="市沢町">
+          <img src="../static/images/桐が作.png" alt="桐が作" class="mappic" id="桐が作">
+          <img src="../static/images/南本宿町.png" alt="南本宿町" class="mappic" id="南本宿町">
+          <img src="../static/images/万騎が原.png" alt="万騎が原" class="mappic" id="万騎が原">
+          <img src="../static/images/柏町.png" alt="柏町" class="mappic" id="柏町">
+          <img src="../static/images/善部町.png" alt="善部町" class="mappic" id="善部町">
+          <img src="../static/images/大池町.png" alt="大池町" class="mappic" id="大池町">
+          <img src="../static/images/y-asahi-photoroom.png" alt="旭区" class="mappic">
+        </div>
+        <img src="../static/images/merger.png" style="margin: -300px 0px 0px 100px; position: absolute;">
+  </section>
+
+  <!-- end brand section -->
+
+  <!-- info section -->
+  <section class="info_section layout_padding2">
+    <div class="container">
+      <div class="info_logo">
+        <h2>
+          ほけんがかり
+        </h2>
+      </div>
+      <div class="row">
+
+        <div class="col-md-3">
+          <div class="info_contact">
+            <h5>
+              情報
+            </h5>
+            <div>
+              <div class="img-box">
+                <img src="../static/images/location-white.png" width="18px" alt="">
+              </div>
+              <p>
+                Address
+              </p>
+            </div>
+            <div>
+              <div class="img-box">
+                <img src="../static/images/telephone-white.png" width="12px" alt="">
+              </div>
+              <p>
+                +01 1234567890
+              </p>
+            </div>
+            <div>
+              <div class="img-box">
+                <img src="../static/images/envelope-white.png" width="18px" alt="">
+              </div>
+              <p>
+                demo@gmail.com
+              </p>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-3">
+          <div class="info_info">
+            <h5>
+              学校案内
+            </h5>
+            <p>
+              地域業界から求められるIT・AI・デジタルビジネス教育を展開し、地域で活躍・貢献できる人材の育成しています。
+            </p>
+          </div>
+        </div>
+
+        <div class="col-md-3">
+          <div class="info_insta">
+            <h5>
+              AI・データサイエンス科                                  
+            </h5>
+            <div class="insta_container">
+              限りない可能性を秘めたAI・データサイエンティスト
+              などとして活躍するために欠かせない実践的
+              スキルやコミュニケーションスキルを
+              身につけていただくことを目指しています。
+            
+            </div>
+          </div>
+        </div>
+        <div class="col-md-3">
+          <div class="info_form ">
+            <h5>
+              お問い合わせ
+            </h5>
+            <form action="">
+              <input type="email" placeholder="Enter your email">
+              <button>
+                Subscribe
+              </button>
+            </form>
+            <div class="social_box">
+              <a href="">
+                <img src="../static/images/fb.png" alt="">
+              </a>
+              <a href="">
+                <img src="../static/images/twitter.png" alt="">
+              </a>
+              <a href="">
+                <img src="../static/images/linkedin.png" alt="">
+              </a>
+              <a href="">
+                <img src="../static/images/youtube.png" alt="">
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- end info_section -->
+  <button id="scrollToTop" style="display: none;">↑</button>
+  <style>
+    /* Style for the scroll to top button */
+    #scrollToTop {
+        position: fixed;
+        width: 60px;
+        height: 60px;
+        bottom: 80px; /* Distance from the bottom */
+        right: 80px; /* Distance from the right */
+        display: inline-block;
+        background: radial-gradient(circle farthest-corner at 10% 20%, rgba(237,3,32,0.87) 20.8%, rgba(242,121,1,0.84) 74.4%);
+        color: #ffffff;
+        -webkit-transition: all 0.3s;
+        transition: all 0.3s;
+        border: 1px solid transparent;
+        border-radius: 50%;
+        cursor: pointer; /* Cursor style */
+        font-size: 20px; /* Font size */
+        display: none; /* Hidden by default */
+        z-index: 1000; /* On top of other elements */
+    }
+
+    #scrollToTop:hover {
+      background: transparent;
+      border-color: #252525;
+      color: #252525;
+    }
+</style>
+<script>
+  // Function to scroll to the top of the page
+function scrollToTop() {
+    window.scrollTo({
+        top: 0,
+        behavior: 'smooth' // Smooth scroll
+    });
+}
+
+// Show the button when the user scrolls down
+window.onscroll = function() {
+    const button = document.getElementById('scrollToTop');
+    if (document.body.scrollTop > 20 || document.documentElement.scrollTop > 20) {
+        button.style.display = "block"; // Show button
+    } else {
+        button.style.display = "none"; // Hide button
+    }
+};
+
+// Event listener for the button click
+document.getElementById('scrollToTop').addEventListener('click', scrollToTop);
+
+</script>
+
+  <!-- footer section -->
+  <section class="container-fluid footer_section ">
+    <div class="container">
+      <p>
+        &copy; 2019 All Rights Reserved By
+      </p>
+    </div>
+  </section>
+  <!-- end  footer section -->
+
+
+
+  <script type="text/javascript" src="../static/js/jquery-3.4.1.min.js"></script>
+  <script type="text/javascript" src="../static/js/bootstrap.js"></script>
+  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.2.1/owl.carousel.min.js">
+  </script>
+  <script type="text/javascript">
+    $(".owl-carousel").owlCarousel({
+      loop: true,
+      margin: 10,
+      nav: true,
+      navText: [],
+      autoplay: true,
+      autoplayHoverPause: true,
+      responsive: {
+        0: {
+          items: 1
+        },
+        420: {
+          items: 2
+        },
+        1000: {
+          items: 5
+        }
+      }
+
+    });
+  </script>
+  <script>
+    var nav = $("#navbarSupportedContent");
+    var btn = $(".custom_menu-btn");
+    btn.click
+    btn.click(function (e) {
+
+      e.preventDefault();
+      nav.toggleClass("lg_nav-toggle");
+      document.querySelector(".custom_menu-btn").classList.toggle("menu_btn-style")
+    });
+  </script>
+  <script>
+    $('.carousel').on('slid.bs.carousel', function () {
+      $(".indicator-2 li").removeClass("active");
+      indicators = $(".carousel-indicators li.active").data("slide-to");
+      a = $(".indicator-2").find("[data-slide-to='" + indicators + "']").addClass("active");
+      console.log(indicators);
+
+    })
+  </script>
+
+</body>
+</body>
+
+</html>

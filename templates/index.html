@@ -1,0 +1,759 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <!-- Basic -->
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <!-- Mobile Metas -->
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+  <!-- Site Metas -->
+  <meta name="keywords" content="" />
+  <meta name="description" content="" />
+  <meta name="author" content="" />
+  <!-- slider stylesheet -->
+  <link rel="stylesheet" type="text/css"
+    href="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.1.3/assets/owl.carousel.min.css" />
+
+  <!-- bootstrap core css -->
+  <link rel="stylesheet" type="text/css" href="../static/css/bootstrap.css" />
+
+  <!-- fonts style -->
+  <link href="https://fonts.googleapis.com/css?family=Open+Sans:400,700|Poppins:400,700&display=swap" rel="stylesheet">
+  <!-- Custom styles for this template -->
+  <link href="../static/css\style.css" rel="stylesheet" />
+  <!-- responsive style -->
+  <link href="../static/css/responsive.css" rel="stylesheet" />
+  <title>ほけんがかり</title>
+</head>
+
+<body>
+  <div class="hero_area">
+    <!-- header section strats -->
+    <header class="header_section">
+      <div class="container-fluid">
+        <nav class="navbar navbar-expand-lg custom_nav-container">
+          <a class="navbar-brand" href="{{ url_for('home') }}">
+            <img src="../static/images/logo.png" alt="" />
+          </a>
+          <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+          </button>
+
+          <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav  ">
+              <li class="nav-item active">
+                <a class="nav-link" href="{{ url_for('home') }}">
+                  <h3>ホーム</h3>
+              </a>
+          </li>
+          <li class="nav-item">
+              <a class="nav-link" href="{{ url_for('add') }}">
+                  <h3>追加</h3>
+              </a>
+          </li>
+          <li class="nav-item">
+              <a class="nav-link" href="{{ url_for('map_page') }}">
+                  <h3>マップ</h3>
+              </a>
+          </li>
+          <li class="nav-item">
+              <a class="nav-link" href="{{ url_for('calendar') }}">
+                  <h3>カレンダー</h3>
+              </a>
+          </li>
+          <li class="nav-item">
+              <a class="nav-link" href="{{ url_for('contact') }}">
+                  <h3>問い合わせ</h3>
+              </a>
+          </li>
+            </ul>
+            <div class="user_option">
+              {% if session['username'] %}
+                  <span>
+                      {{ session['username'] }} <!-- Display the logged-in username -->
+                  </span>
+                  <a href="{{ url_for('logout') }}" class="btn btn-danger">Logout</a>
+              {% else %}
+                  <a href="{{ url_for('login') }}">
+                      <img src="../static/images/user.png" alt="">
+                      <span>ログアウト</span> <!-- Changed to "Login" -->
+                  </a>
+              {% endif %}
+              <form class="form-inline my-2 my-lg-0 ml-0 ml-lg-4 mb-3 mb-lg-0">
+                  <button class="btn my-2 my-sm-0 nav_search-btn" type="submit"></button>
+              </form>
+            </div>
+          </div>
+          <div>
+            <div class="custom_menu-btn ">
+              <button>
+                <span class=" s-1">
+
+                </span>
+                <span class="s-2">
+
+                </span>
+                <span class="s-3">
+
+                </span>
+              </button>
+            </div>
+          </div>
+
+        </nav>
+      </div>
+    </header>
+    <!-- end header section -->
+    <!-- slider section -->
+    <section class="slider_section ">
+      <div class="play_btn">
+        <a href="">
+          <img src="../static/images/play.png" alt="">
+        </a>
+      </div>
+      <div class="number_box">
+        <div>
+          <ol class="carousel-indicators indicator-2">
+            <li data-target="#carouselExampleIndicators" data-slide-to="0" class="active">01</li>
+            <li data-target="#carouselExampleIndicators" data-slide-to="1">02</li>
+            <li data-target="#carouselExampleIndicators" data-slide-to="2">03</li>
+            <li data-target="#carouselExampleIndicators" data-slide-to="3">04</li>
+          </ol>
+        </div>
+      </div>
+      <div class="container">
+        <div id="carouselExampleIndicators" class="carousel slide" data-ride="carousel">
+          <ol class="carousel-indicators">
+            <li data-target="#carouselExampleIndicators" data-slide-to="0" class="active"></li>
+            <li data-target="#carouselExampleIndicators" data-slide-to="1"></li>
+            <li data-target="#carouselExampleIndicators" data-slide-to="2"></li>
+            <li data-target="#carouselExampleIndicators" data-slide-to="3"></li>
+          </ol>
+          <div class="carousel-inner">
+            <div class="carousel-item active">
+              <div class="row">
+                <div class="col-md-6">
+                  <div class="detail-box">
+                    <h1>  
+                        ほけんがかり
+                    </h1>
+                    <!-- <div class="btn-box">
+                      <a href="" class="btn-1">
+                        Read More
+                      </a>
+                      <a href="" class="btn-2">
+                        Contact us
+                      </a>  
+                    </div> -->
+                  </div>
+                </div>
+                <div class="col-md-6 img-container">
+                  <div class="img-box">
+                    <img src="../static/images/slider-img.png" alt="">
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="carousel-item ">
+              <div class="row">
+                <div class="col-md-6">
+                  <div class="detail-box">
+                    <h1>
+                        予想する
+                    </h1>
+                    <!-- <div class="btn-box">
+                      <a href="" class="btn-1">
+                        Read More
+                      </a>
+                      <a href="" class="btn-2">
+                        Contact us
+                      </a>
+                    </div> -->
+                  </div>
+                </div>
+                <div class="col-md-6 img-container">
+                  <div class="img-box">
+                    <img src="../static/images/slider-img2.png" alt="">
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="carousel-item ">
+              <div class="row">
+                <div class="col-md-6">
+                  <div class="detail-box">
+                    <h1>
+                        早さ
+                    </h1>
+                    <!-- <div class="btn-box">
+                      <a href="" class="btn-1">
+                        Read More
+                      </a>
+                      <a href="" class="btn-2">
+                        Contact us
+                      </a>
+                    </div> -->
+                  </div>
+                </div>
+                <div class="col-md-6 img-container">
+                  <div class="img-box">
+                    <img src="../static/images/slider-img3.png" alt="">
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="carousel-item ">
+              <div class="row">
+                <div class="col-md-6">
+                  <div class="detail-box">
+                    <h1>
+                      正解度
+                    </h1>
+                    <!-- <div class="btn-box">
+                      <a href="" class="btn-1">
+                        Read More
+                      </a>
+                      <a href="" class="btn-2">
+                        Contact us
+                      </a>
+                    </div> -->
+                  </div>
+                </div>
+                <div class="col-md-6 img-container">
+                  <div class="img-box">
+                    <img src="../static/images/slider-img4.png" alt="">
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+    <!-- end slider section -->
+  </div>
+
+  <!-- trending section -->
+  <section class="trending_section layout_padding">
+    <div id="accordion">
+      <div class="container">
+              <div class="heading_container">
+                <h2>Trending Categories</h2>
+              </div>
+              <div class="tab_container">
+                <table id="locations-table">
+                  <tbody>
+                      <!-- Trending locations will be displayed here -->
+                  </tbody>
+                </table>
+                <script>
+                  // Get today's date and the next 4 days
+                  function getNextFiveDays() {
+                      const today = new Date();
+                      const nextFiveDays = [];
+          
+                      for (let i = 0; i < 5; i++) {
+                          const date = new Date(today);
+                          date.setDate(today.getDate() + i);
+                          nextFiveDays.push(date.toISOString().split('T')[0]); // Format: YYYY-MM-DD
+                      }
+          
+                      return nextFiveDays;
+                  }
+          
+                  // Fetch CSV data and populate the data object
+                  function fetchData() {
+                      return fetch('/static/trends.csv') // Ensure the path is correct
+                          .then(response => {
+                              if (!response.ok) {
+                                  throw new Error('Failed to load CSV file');
+                              }
+                              return response.text();
+                          })
+                          .then(text => {
+                              const lines = text.trim().split('\n');
+                              const result = [];
+                              const nextFiveDays = getNextFiveDays(); // Get the next five days
+          
+                              for (let i = 1; i < lines.length; i++) {
+                                  const [date, location, rating] = lines[i].split(',');
+                                  if (date && location && rating && nextFiveDays.includes(date)) { // Filter by date
+                                      result.push({
+                                          date,
+                                          location,
+                                          rating: `${parseInt(rating, 10)}人` // Append "人" to rating
+                                      });
+                                  }
+                              }
+                              return result;
+                          });
+                  }
+          
+                  // Function to group the data by date
+                  function groupByDate(data) {
+                      const grouped = {};
+          
+                      data.forEach(item => {
+                          if (!grouped[item.date]) {
+                              grouped[item.date] = [];
+                          }
+                          grouped[item.date].push(item);
+                      });
+          
+                      return grouped;
+                  }
+          
+                  // Function to display the top 3 trending locations by date
+                  function displayTrendingLocationsByDate(groupedData) {
+                      const tableBody = document.querySelector('#locations-table tbody');
+                      tableBody.innerHTML = ''; // Clear previous data
+          
+                      Object.keys(groupedData).forEach(date => {
+                          // Sort by '評価' (rating) in descending order for each date
+                          const sortedLocations = groupedData[date].sort((a, b) => b.rating - a.rating);
+          
+                          // Get the top 3 locations for each date
+                          const top3 = sortedLocations.slice(0, 3);
+          
+                          // Add a row for the date
+                          const dateRow = document.createElement('tr');
+                          const dateCell = document.createElement('td');
+                          dateCell.setAttribute('colspan', '3');
+                          dateCell.textContent = date;
+                          dateCell.classList.add('trending-date');
+                          dateRow.appendChild(dateCell);
+                          tableBody.appendChild(dateRow);
+          
+                          // Add rows for the top 3 locations for that date
+                          top3.forEach(locationData => {
+                              const row = document.createElement('tr');
+          
+                              const locationCell = document.createElement('td');
+                              locationCell.textContent = locationData.location;
+                              row.appendChild(locationCell);
+          
+                              const ratingCell = document.createElement('td');
+                              ratingCell.textContent = locationData.rating; // Rating already has "人"
+                              row.appendChild(ratingCell);
+          
+                              tableBody.appendChild(row);
+                          });
+                      });
+                  }
+          
+                  // Fetch the CSV data and display trending locations
+                  fetchData().then(parsedData => {
+                      const groupedData = groupByDate(parsedData);
+                      displayTrendingLocationsByDate(groupedData);
+                  }).catch(error => console.error('Error fetching CSV:', error));
+              </script>
+              </div>
+      </div>
+    </div>
+</section>
+
+  <!-- end trending section -->
+ <!-- about section -->
+
+ <section class="about_section layout_padding">
+  <div class="container">
+    <div class="row">
+      <div class="col-md-6">
+        <div class="detail-box">
+          <div class="heading_container">
+            <h2>
+              システム紹介
+            </h2>
+
+          </div>
+          <p>
+            このシステムは、将来のインシデントを予測し、インタラクティブなヒートマップに表示します。このヒートマップは、ウェブ経由でいつでもどのデバイスからでもアクセスできます。これにより、インシデントのホットスポットを簡単に視覚化し、リアルタイムの洞察に基づいてデータに基づいた意思決定を行うことができ、対応と計画戦略を改善できます。
+          </p>
+          <a href="">
+            Read More
+          </a>
+        </div>
+      </div>
+      <div class="col-md-6">
+        <div class="img-box">
+          <img src="../static/images/about-img.png" alt="">
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+<!-- end about section -->
+  <!-- feature section -->
+
+  <section class="feature_section  layout_padding">
+    <div class="container">
+      <div class="row">
+        <div class="col-md-6">
+          <div class="detail-box">
+            <h2>
+              The Latest Features
+            </h2>
+            <h2 class="main_heading">
+              Hand Tracking
+            </h2>
+
+            <div class="">
+              <button onclick="runPythonScript()">Use Now</button>
+          </div>
+          <script>
+              function runPythonScript() {
+                  fetch('/run', {
+                      method: 'POST'
+                  })
+                  .then(response => response.json())
+                  .then(data => {
+                      alert(data.message);
+                  })
+                  .catch(error => {
+                      console.error('Error:', error);
+                      alert('There was an error!');
+                  });
+              }
+          </script>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="img-box">
+            <img src="../static/images/discount-img.png" alt="">
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- end feature section -->
+
+  <!-- member section -->
+
+  <section class="brand_section">
+    <div class="container">
+      <div class="heading_container">
+        <h2>
+          メンバー
+        </h2>
+      </div>
+      <div class="brand_container layout_padding2">
+        <div class="box">
+          <a href="">
+            <div class="img-box">
+              <img src="../static/images/Kamiyama.png" alt="">
+            </div>
+            <div class="detail-box">
+              <h6>
+                神山
+              </h6>
+            </div>
+          </a>
+        </div>
+        <div class="box">
+          <a href="">
+            <div class="img-box">
+              <img src="../static/images/yamamoto.png" alt="">
+            </div>
+            <div class="detail-box">
+              <h6>
+                山本
+              </h6>
+            </div>
+          </a>
+        </div>
+        <div class="box">
+          <a href="">
+            <div class="img-box">
+              <img src="../static/images/waiyan.png" alt="">
+            </div>
+            <div class="detail-box">
+              <h6>
+                リン
+              </h6>
+            </div>
+          </a>
+        </div>
+        <div class="box">
+          <a href="">
+            <div class="img-box">
+              <img src="../static/images/watanabe.png" alt="">
+            </div>
+            <div class="detail-box">
+              <h6>
+                渡部
+              </h6>
+            </div>
+          </a>
+        </div>
+      </div>
+    </div>
+  </section> 
+
+  <!-- end member section -->
+  <!-- contact section -->
+
+  <section class="contact_section layout_padding">
+    <div class="container ">
+      <div class="heading_container">
+        <h2 class="">
+          問い合わせ
+        </h2>
+      </div>
+
+    </div>
+    <div class="container">
+      <div class="row">
+        <div class="col-md-6">
+          <form action="">
+            <div>
+              <input type="text" placeholder="Name" />
+            </div>
+            <div>
+              <input type="email" placeholder="Email" />
+            </div>
+            <div>
+              <input type="text" placeholder="Phone" />
+            </div>
+            <div>
+              <input type="text" class="message-box" placeholder="Message" />
+            </div>
+            <div class="d-flex ">
+              <button>
+                SEND
+              </button>
+            </div>
+          </form>
+        </div>
+        <div class="col-md-6">
+          <div class="map_container">
+            <div class="map-responsive">
+              <iframe
+                src="https://www.google.com/maps/embed/v1/place?key=AIzaSyA0s1a7phLN0iaD6-UE7m4qP-z21pH0eSc&q=128-4+Higashikibogaoka,+Asahi+Ward,+Yokohama,+Kanagawa+241-0826"
+                width="600" height="300" frameborder="0" style="border:0; width: 100%; height:100%"
+                allowfullscreen>
+              </iframe>
+            </div>
+            
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- end contact section -->
+
+  <!-- info section -->
+  <section class="info_section layout_padding2">
+    <div class="container">
+      <div class="info_logo">
+        <h2>
+          ほけんがかり
+        </h2>
+      </div>
+      <div class="row">
+
+        <div class="col-md-3">
+          <div class="info_contact">
+            <h5>
+              情報
+            </h5>
+            <div>
+              <div class="img-box">
+                <img src="../static/images/location-white.png" width="18px" alt="">
+              </div>
+              <p>
+                Address
+              </p>
+            </div>
+            <div>
+              <div class="img-box">
+                <img src="../static/images/telephone-white.png" width="12px" alt="">
+              </div>
+              <p>
+                +01 1234567890
+              </p>
+            </div>
+            <div>
+              <div class="img-box">
+                <img src="../static/images/envelope-white.png" width="18px" alt="">
+              </div>
+              <p>
+                demo@gmail.com
+              </p>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-3">
+          <div class="info_info">
+            <h5>
+              学校案内
+            </h5>
+            <p>
+              地域業界から求められるIT・AI・デジタルビジネス教育を展開し、地域で活躍・貢献できる人材の育成しています。
+            </p>
+          </div>
+        </div>
+
+        <div class="col-md-3">
+          <div class="info_insta">
+            <h5>
+              AI・データサイエンス科                                  
+            </h5>
+            <div class="insta_container">
+              限りない可能性を秘めたAI・データサイエンティスト
+              などとして活躍するために欠かせない実践的
+              スキルやコミュニケーションスキルを
+              身につけていただくことを目指しています。
+            
+            </div>
+          </div>
+        </div>
+        <div class="col-md-3">
+          <div class="info_form ">
+            <h5>
+              お問い合わせ
+            </h5>
+            <form action="">
+              <input type="email" placeholder="Enter your email">
+              <button>
+                Subscribe
+              </button>
+            </form>
+            <div class="social_box">
+              <a href="">
+                <img src="../static/images/fb.png" alt="">
+              </a>
+              <a href="">
+                <img src="../static/images/twitter.png" alt="">
+              </a>
+              <a href="">
+                <img src="../static/images/linkedin.png" alt="">
+              </a>
+              <a href="">
+                <img src="../static/images/youtube.png" alt="">
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- end info_section -->
+  <button id="scrollToTop" style="display: none;">↑</button>
+  <style>
+    /* Style for the scroll to top button */
+    #scrollToTop {
+        position: fixed;
+        width: 60px;
+        height: 60px;
+        bottom: 80px; /* Distance from the bottom */
+        right: 80px; /* Distance from the right */
+        display: inline-block;
+        background: radial-gradient(circle farthest-corner at 10% 20%, rgba(237,3,32,0.87) 20.8%, rgba(242,121,1,0.84) 74.4%);
+        color: #ffffff;
+        -webkit-transition: all 0.3s;
+        transition: all 0.3s;
+        border: 1px solid transparent;
+        border-radius: 50%;
+        cursor: pointer; /* Cursor style */
+        font-size: 20px; /* Font size */
+        display: none; /* Hidden by default */
+        z-index: 1000; /* On top of other elements */
+    }
+
+    #scrollToTop:hover {
+      background: transparent;
+      border-color: #252525;
+      color: #252525;
+    }
+</style>
+<script>
+  // Function to scroll to the top of the page
+function scrollToTop() {
+    window.scrollTo({
+        top: 0,
+        behavior: 'smooth' // Smooth scroll
+    });
+}
+
+// Show the button when the user scrolls down
+window.onscroll = function() {
+    const button = document.getElementById('scrollToTop');
+    if (document.body.scrollTop > 20 || document.documentElement.scrollTop > 20) {
+        button.style.display = "block"; // Show button
+    } else {
+        button.style.display = "none"; // Hide button
+    }
+};
+
+// Event listener for the button click
+document.getElementById('scrollToTop').addEventListener('click', scrollToTop);
+
+</script>
+  <!-- footer section -->
+  <section class="container-fluid footer_section ">
+    <div class="container">
+      <p>
+        &copy; 2019 All Rights Reserved By
+      </p>
+    </div>
+  </section>
+  <!-- end  footer section -->
+
+
+  <script type="text/javascript" src="../static/js/jquery-3.4.1.min.js"></script>
+  <script type="text/javascript" src="../static/js/bootstrap.js"></script>
+  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.2.1/owl.carousel.min.js">
+  </script>
+  <script type="text/javascript">
+    $(".owl-carousel").owlCarousel({
+      loop: true,
+      margin: 10,
+      nav: true,
+      navText: [],
+      autoplay: true,
+      autoplayHoverPause: true,
+      responsive: {
+        0: {
+          items: 1
+        },
+        420: {
+          items: 2
+        },
+        1000: {
+          items: 5
+        }
+      }
+
+    });
+  </script>
+  <script>
+    var nav = $("#navbarSupportedContent");
+    var btn = $(".custom_menu-btn");
+    btn.click
+    btn.click(function (e) {
+
+      e.preventDefault();
+      nav.toggleClass("lg_nav-toggle");
+      document.querySelector(".custom_menu-btn").classList.toggle("menu_btn-style")
+    });
+  </script>
+  <script>
+    $('.carousel').on('slid.bs.carousel', function () {
+      $(".indicator-2 li").removeClass("active");
+      indicators = $(".carousel-indicators li.active").data("slide-to");
+      a = $(".indicator-2").find("[data-slide-to='" + indicators + "']").addClass("active");
+      console.log(indicators);
+
+    })
+  </script>
+
+</body>
+</body>
+
+</html>

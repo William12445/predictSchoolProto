@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trending Locations by Date</title>
+    <link rel="stylesheet" href="/static/css/style.css"> <!-- Link to your CSS -->
+    <style>
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        th, td {
+            padding: 12px;
+            border: 1px solid #ddd;
+            text-align: center; /* Center align text */
+        }
+        th {
+            background-color: #f4f4f4;
+        }
+        .trending-date {
+            font-weight: bold;
+            background-color: #ffeb3b;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <h1>Trending Locations by Date</h1>
+    
+    <table id="locations-table">
+        <thead>
+            <tr>
+                <th>日付 (Date)</th>
+                <th>場所 (Location)</th>
+                <th>評価 (Rating)</th>
+            </tr>
+        </thead>
+        <tbody>
+            <!-- Trending locations will be displayed here -->
+        </tbody>
+    </table>
+
+    <script>
+        // Fetch CSV data and populate the data object
+        function fetchData() {
+            return fetch('../static/trends.csv') // Ensure the path is correct
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Failed to load CSV file');
+                    }
+                    return response.text();
+                })
+                .then(text => {
+                    const lines = text.trim().split('\n');
+                    const result = [];
+                    for (let i = 1; i < lines.length; i++) {
+                        const [date, location, rating] = lines[i].split(',');
+                        if (date && location && rating) {
+                            result.push({
+                                date,
+                                location,
+                                rating: `${parseInt(rating, 10)}人` // Append "人" to rating
+                            });
+                        }
+                    }
+                    return result;
+                });
+        }
+
+        // Function to group the data by date
+        function groupByDate(data) {
+            const grouped = {};
+
+            data.forEach(item => {
+                if (!grouped[item.date]) {
+                    grouped[item.date] = [];
+                }
+                grouped[item.date].push(item);
+            });
+
+            return grouped;
+        }
+
+        // Function to display the top 3 trending locations by date
+        function displayTrendingLocationsByDate(groupedData) {
+            const tableBody = document.querySelector('#locations-table tbody');
+            tableBody.innerHTML = ''; // Clear previous data
+
+            Object.keys(groupedData).forEach(date => {
+                // Sort by '評価' (rating) in descending order for each date
+                const sortedLocations = groupedData[date].sort((a, b) => b.rating - a.rating);
+
+                // Get the top 3 locations for each date
+                const top3 = sortedLocations.slice(0, 3);
+
+                // Add a row for the date
+                const dateRow = document.createElement('tr');
+                const dateCell = document.createElement('td');
+                dateCell.setAttribute('colspan', '3');
+                dateCell.textContent = date;
+                dateCell.classList.add('trending-date');
+                dateRow.appendChild(dateCell);
+                tableBody.appendChild(dateRow);
+
+                // Add rows for the top 3 locations for that date
+                top3.forEach(locationData => {
+                    const row = document.createElement('tr');
+
+                    const locationCell = document.createElement('td');
+                    locationCell.textContent = locationData.location;
+                    row.appendChild(locationCell);
+
+                    const ratingCell = document.createElement('td');
+                    ratingCell.textContent = locationData.rating; // Rating already has "人"
+                    row.appendChild(ratingCell);
+
+                    tableBody.appendChild(row);
+                });
+            });
+        }
+
+        // Fetch the CSV data and display trending locations
+        fetchData().then(parsedData => {
+            const groupedData = groupByDate(parsedData);
+            displayTrendingLocationsByDate(groupedData);
+        }).catch(error => console.error('Error fetching CSV:', error));
+    </script>
+</body>
+</html>
