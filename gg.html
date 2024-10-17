@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Date Navigation</title>
+</head>
+<body>
+    <div>
+        <button id="leftArrow">←</button>
+        <span id="dateDisplay"></span>
+        <button id="rightArrow">→</button>
+    </div>
+    <button id="saveImageButton">Save Image</button>
+
+    <script>
+        document.getElementById('saveImageButton').addEventListener('click', () => {
+            const date = document.getElementById('dateDisplay').textContent; // Get date from span
+            saveImageForDate(date);
+        });
+    
+        function saveImageForDate(date) {
+            console.log(`Saving image for date: ${date}`);
+    
+            fetch('/save-image', {
+                method: 'POST',  // Ensure this is a POST request
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ date: date })  // Send date in the body
+            })
+            .then(response => {
+                if (response.ok) {
+                    alert(`Image saved for date: ${date}`);
+                } else {
+                    alert('Error saving image.');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+        }
+    </script>
+    
+</body>
+</html>
